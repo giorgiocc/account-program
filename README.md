@@ -7,7 +7,7 @@ npm install
 - make
 - make deploy
 
-# run react
+# run react js
 - cd src/client/docs
 - npm run dev
 
