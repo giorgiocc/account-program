@@ -4,15 +4,15 @@
 npm install
 
 # Deploy program 
-make
-deploy
+- make
+- make deploy
 
 # run react
-cd src/client/docs
-npm run dev
+- cd src/client/docs
+- npm run dev
 
 # run js client
-cd src/client/
-npm run start
+- cd src/client/
+- npm run start
 
 ```
