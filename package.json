@@ -10,6 +10,7 @@
   "author": "",
   "license": "MIT",
   "scripts": {
+    "build": "build.js" ,
     "start": "ts-node src/client/main.ts",
     "start-with-test-validator": "start-server-and-test 'solana-test-validator --reset --quiet' http://localhost:8899/health start",
     "lint": "eslint --ext .ts src/client/* && prettier --check \"src/client/**/*.ts\"",
@@ -21,6 +22,8 @@
     "clean:program-rust": "cargo clean --manifest-path=./src/program-rust/Cargo.toml && rm -rf ./dist",
     "test:program-rust": "cargo test-bpf --manifest-path=./src/program-rust/Cargo.toml",
     "pretty": "prettier --write '{,src/**/}*.ts'"
+     
+
   },
   "dependencies": {
     "@solana/web3.js": "^1.33.0",

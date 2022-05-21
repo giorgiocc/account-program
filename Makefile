@@ -1,7 +1,10 @@
 build:
 	npm run build:program-rust
 
-clean:
-	cargo clean
+deploy:
+	solana program deploy dist/program/accountprogram.so
+
+
+
 
 

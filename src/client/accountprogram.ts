@@ -25,16 +25,18 @@ const PROGRAM_SO_PATH = path.join(PROGRAM_PATH, 'accountprogram.so');
 const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'accountprogram-keypair.json');
 
 class GreetingAccount {
-  counter = 0;
-  constructor(fields: {counter: number} | undefined = undefined) {
+  id = 0;
+  name = "0";
+  constructor(fields: {name: string, id: number}| undefined = undefined) {
     if (fields) {
-      this.counter = fields.counter;
+      this.id = fields.id;
+      this.name = fields.name
     }
   }
 }
 
 const GreetingSchema = new Map([
-  [GreetingAccount, {kind: 'struct', fields: [['counter', 'u32']]}],
+  [GreetingAccount, {kind: 'struct', fields: [['id', 'u32'], ['name', 'string']]}],
 ]);
 
 const GREETING_SIZE = borsh.serialize(
@@ -101,10 +103,9 @@ export async function checkProgram(): Promise<void> {
   }
   console.log(`Using program ${programId.toBase58()}`);
 
-  const name = await question("What is your name?: ");
-  console.log('Creating account for: ', name)
 
-  const GREETING_SEED = name;
+
+  const GREETING_SEED = "saeed";
   greetedPubkey = await PublicKey.createWithSeed(
     payer.publicKey,
     GREETING_SEED,
@@ -137,17 +138,22 @@ export async function checkProgram(): Promise<void> {
   }
 }
 
-export async function sayHello(): Promise<void> {
-  console.log('Created account:', greetedPubkey.toBase58());
+
+export async function sendTrans(): Promise<void> {
+  const userName = await question("What is your name?: ");
+  console.log('Creating account for: ', userName)
+  console.log('Sending Transaction', greetedPubkey.toBase58());
   const instruction = new TransactionInstruction({
     keys: [{pubkey: greetedPubkey, isSigner: false, isWritable: true}],
     programId,
-    data: Buffer.alloc(0), 
+    data: Buffer.from(borsh.serialize(
+      GreetingSchema,
+      new GreetingAccount({id: 25, name: userName}),
+    )),
   });
   await sendAndConfirmTransaction(
-    connection,
+    connection, 
     new Transaction().add(instruction),
     [payer],
   );
-
 }

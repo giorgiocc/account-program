@@ -1,8 +1,18 @@
-<p align="center">
-  <a href="https://solana.com">
-    <img alt="Solana" src="https://i.imgur.com/uBVzyX3.png" width="250" />
-  </a>
-</p>
 
+# Usage
+```
+npm install
 
-# Solana
+# Deploy program 
+1. make
+2. make deploy
+
+# run react
+1. cd src/client/docs
+2. npm run dev
+
+# run js client
+1. cd src/client/
+2. npm run start
+
+```

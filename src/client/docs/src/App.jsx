@@ -9,10 +9,10 @@ import {
   useControllableState,
   Input,
 } from "@chakra-ui/react";
-import { getCounter, initializeAccount, sendTransaction } from "./lib";
+import { getCounter, initializeAccount,  } from "./lib";
+
 
 function App() {
-
 
   const [account, setAccount] = useState(null);
   const [trasacting, setTransacting] = useState(false);
@@ -26,6 +26,8 @@ function App() {
       setAccount(pubKey);
     }
   };
+
+
 
   const [value, setValue] = useControllableState({ defaultValue: "" })
   const handleChange = (event) => setValue(event.target.value)
@@ -68,6 +70,7 @@ function App() {
 
   );
 }
+// export const accountData = event.target.value;
 
 export default App;
 

@@ -9,10 +9,12 @@ import {
 } from "@solana/web3.js";
 import { deserialize } from "borsh";
 import { Counter, CounterSchema } from "./schema";
+import { useState } from 'react';
+
 
 const SEED = "counter";
 const PROGRAM_ID = new PublicKey(
-  "8PTS2473xFhTwppTtr6gnRjozX9WGgM6tvkTrih6kY5J"
+  "AZpA4YAmDtL9cP4u8ASayNXg3LYBtQZTUULFZhaCJK99"
 );
 const connection = new Connection(clusterApiUrl("devnet"));
 
@@ -30,7 +32,7 @@ export async function initializeAccount(pubKey) {
     const instruction = SystemProgram.createAccountWithSeed({
       basePubkey: pubKey,
       fromPubkey: pubKey,
-      lamports: LAMPORTS_PER_SOL * 0.00091872,
+      lamports: LAMPORTS_PER_SOL * 0.00092872,
       programId: PROGRAM_ID,
       seed: SEED,
       space: 4,
@@ -48,26 +50,26 @@ export async function initializeAccount(pubKey) {
   return [account, counterKey];
 }
 
-export async function getCounter(pubKey) {
-  const { data } = await connection.getAccountInfo(pubKey);
-  return deserialize(CounterSchema, Counter, data);
-}
 
-export async function sendTransaction(instruction, pubKey) {
+export async function sendTransaction(pubKey){
   const transaction = new Transaction({
     feePayer: window.solana.publicKey,
     recentBlockhash: (await connection.getLatestBlockhash("finalized"))
       .blockhash,
   });
 
-  transaction.add(
-    new TransactionInstruction({
-      keys: [{ pubkey: pubKey, isSigner: false, isWritable: true }],
-      programId: PROGRAM_ID,
-      data: instruction,
-    })
+  console.log('Sending Transaction', pubKey.toBase58());
+  const instruction = new TransactionInstruction({
+    keys: [{pubkey: pubKey, isSigner: false, isWritable: true}],
+    programId: PROGRAM_ID,
+    data: Buffer.from(borsh.serialize(
+      GreetingSchema,
+      new GreetingAccount({id: 25, name: transactionData}),
+    )),
+  });
+  await sendAndConfirmTransaction(
+    connection,
+    new Transaction().add(instruction),
+    [payer],
   );
-
-  const { signature } = await window.solana.signAndSendTransaction(transaction);
-  await connection.confirmTransaction(signature);
 }
