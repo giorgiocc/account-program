@@ -3,7 +3,7 @@ import {
   establishPayer,
   checkProgram,
   sendTrans,
-  getAccountData,
+  sendEmptyTrans,
 } from './accountprogram';
 
 async function main() {
@@ -11,8 +11,9 @@ async function main() {
   await establishConnection();
   await establishPayer();
   await checkProgram();
-  await sendTrans();
-  await getAccountData();
+  // await sendTrans();
+  await sendEmptyTrans()
+
 }
 
 main().then(

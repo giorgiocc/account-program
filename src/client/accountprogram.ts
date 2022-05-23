@@ -6,6 +6,7 @@ import {
   SystemProgram,
   TransactionInstruction,
   Transaction,
+  clusterApiUrl,
   sendAndConfirmTransaction,
 } from '@solana/web3.js';
 import fs from 'mz/fs';
@@ -13,6 +14,7 @@ import path from 'path';
 import * as borsh from 'borsh';
 import {getPayer, getRpcUrl, createKeypairFromFile} from './utils';
 import question from "./question"
+
 
 
 let connection: Connection;
@@ -26,7 +28,7 @@ const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'accountprogram-keypair.jso
 
 class GreetingAccount {
   id = 0;
-  name = "0";
+  name = "AccountName";
   constructor(fields: {name: string, id: number}| undefined = undefined) {
     if (fields) {
       this.id = fields.id;
@@ -82,6 +84,9 @@ export async function checkProgram(): Promise<void> {
   try {
     const programKeypair = await createKeypairFromFile(PROGRAM_KEYPAIR_PATH);
     programId = programKeypair.publicKey;
+    // programId = new PublicKey(
+    //   "AZpA4YAmDtL9cP4u8ASayNXg3LYBtQZTUULFZhaCJK99"
+    // );
   } catch (err) {
     const errMsg = (err as Error).message;
     throw new Error(
@@ -105,7 +110,7 @@ export async function checkProgram(): Promise<void> {
 
 
 
-  const GREETING_SEED = "saeed";
+  const GREETING_SEED = "seed9";
   greetedPubkey = await PublicKey.createWithSeed(
     payer.publicKey,
     GREETING_SEED,
@@ -143,12 +148,13 @@ export async function sendTrans(): Promise<void> {
   const userName = await question("What is your name?: ");
   console.log('Creating account for: ', userName)
   console.log('Sending Transaction', greetedPubkey.toBase58());
+  
   const instruction = new TransactionInstruction({
     keys: [{pubkey: greetedPubkey, isSigner: false, isWritable: true}],
     programId,
     data: Buffer.from(borsh.serialize(
       GreetingSchema,
-      new GreetingAccount({id: 25, name: userName}),
+      new GreetingAccount({id: 0, name: userName}),
     )),
   });
   await sendAndConfirmTransaction(
@@ -157,3 +163,18 @@ export async function sendTrans(): Promise<void> {
     [payer],
   );
 }
+
+export async function getAccountData(): Promise<void> {
+    const MY_PROGRAM_ID = new PublicKey(
+      "AZpA4YAmDtL9cP4u8ASayNXg3LYBtQZTUULFZhaCJK99"
+    );
+    const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
+  
+    const accounts = await connection.getProgramAccounts(MY_PROGRAM_ID);
+  
+    console.log(`Accounts for program ${MY_PROGRAM_ID}: `);
+    console.log(accounts);
+  
+} 
+
+
